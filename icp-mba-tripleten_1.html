@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ICP MBA DA&AI — TripleTen Brasil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --navy:#0C1E3C; --navy2:#162847; --amber:#D4820A; --amber-bg:#FFF4E0;
+  --teal:#0E7A70; --teal-bg:#E6F5F3; --red:#B83232; --red-bg:#FDEAEA;
+  --bg:#F4F6F9; --surface:#FFFFFF; --border:#DCE2EC;
+  --text:#0C1E3C; --muted:#5A6A82; --label:#8494A9; --tag-bg:#E8ECF3;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1525; --surface:#112038; --border:#1E3255;
+    --text:#D8E4F0; --muted:#7A90A8; --label:#4A6480; --tag-bg:#1A2D48;
+    --amber-bg:#2A1A00; --teal-bg:#0A2825; --red-bg:#2A0A0A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1525; --surface:#112038; --border:#1E3255;
+  --text:#D8E4F0; --muted:#7A90A8; --label:#4A6480; --tag-bg:#1A2D48;
+  --amber-bg:#2A1A00; --teal-bg:#0A2825; --red-bg:#2A0A0A;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg); color:var(--text);
+  line-height:1.6; font-size:15px;
+}
+.page-wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+
+/* HEADER */
+.report-header{background:var(--navy);color:#fff;padding:36px 20px 32px;position:relative;}
+.report-header-inner{max-width:900px;margin:0 auto;}
+.report-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7FAAD0;margin-bottom:14px;}
+.report-title{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(24px,5vw,40px);line-height:1.15;margin:0 0 12px;color:#fff;text-wrap:balance;}
+.report-subtitle{font-size:14px;color:#A8C4DE;max-width:560px;}
+.report-meta{margin-top:24px;display:flex;flex-wrap:wrap;gap:20px;}
+.meta-item{font-family:'JetBrains Mono',monospace;font-size:11px;color:#7FAAD0;display:flex;flex-direction:column;gap:2px;}
+.meta-item strong{color:#fff;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;}
+
+/* LANG TOGGLE */
+.lang-toggle{
+  position:absolute;top:20px;right:20px;
+  display:flex;gap:0;border:1px solid rgba(255,255,255,.25);border-radius:6px;overflow:hidden;
+}
+.lang-btn{
+  background:transparent;color:rgba(255,255,255,.6);border:none;cursor:pointer;
+  padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  letter-spacing:.08em;transition:background .15s,color .15s;
+}
+.lang-btn.active{background:rgba(255,255,255,.18);color:#fff;}
+.lang-btn:hover:not(.active){background:rgba(255,255,255,.08);color:#fff;}
+
+/* TOC */
+.toc-bar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none;}
+.toc-bar::-webkit-scrollbar{display:none;}
+.toc-inner{max-width:900px;margin:0 auto;display:flex;padding:0 20px;}
+.toc-link{font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;padding:12px 12px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.toc-link:hover{color:var(--amber);border-color:var(--amber);}
+
+/* SECTIONS */
+.section{padding-top:52px;}
+.section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.ey-amber{color:var(--amber);} .ey-teal{color:var(--teal);} .ey-red{color:var(--red);} .ey-navy{color:var(--navy);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ey-navy{color:#7FAAD0;}}
+:root[data-theme="dark"] .ey-navy{color:#7FAAD0;}
+.section-title{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(20px,4vw,30px);line-height:1.2;margin:0 0 6px;text-wrap:balance;}
+.section-lead{font-size:14.5px;color:var(--muted);max-width:640px;margin-bottom:28px;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:48px 0 0;}
+
+/* STAT TILES */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px;}
+.stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.stat-tile .num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:600;line-height:1;margin-bottom:4px;}
+.stat-tile .lbl{font-size:12px;color:var(--muted);line-height:1.3;}
+.num-amber{color:var(--amber);} .num-teal{color:var(--teal);} .num-red{color:var(--red);} .num-navy{color:var(--navy);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .num-navy{color:#7FAAD0;}}
+:root[data-theme="dark"] .num-navy{color:#7FAAD0;}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+thead th{background:var(--navy);color:#C8D8E8;font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:10px 14px;text-align:left;}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--bg);}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--tag-bg);color:var(--muted);}
+.tag-green{background:var(--teal-bg);color:var(--teal);}
+.tag-amber{background:var(--amber-bg);color:var(--amber);}
+.tag-red{background:var(--red-bg);color:var(--red);}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+.funnel-step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;display:flex;align-items:flex-start;gap:16px;}
+.funnel-pct{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;min-width:60px;color:var(--teal);}
+.funnel-pct.drop{color:var(--red);}
+.funnel-body strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px;}
+.funnel-body span{font-size:13px;color:var(--muted);}
+
+/* ALERTS */
+.alert{border-radius:8px;padding:16px 18px;margin-bottom:16px;border-left:4px solid;}
+.alert-red{background:var(--red-bg);border-color:var(--red);}
+.alert-amber{background:var(--amber-bg);border-color:var(--amber);}
+.alert-teal{background:var(--teal-bg);border-color:var(--teal);}
+.alert-title{font-weight:700;font-size:13px;margin-bottom:4px;}
+.alert-red .alert-title{color:var(--red);}
+.alert-amber .alert-title{color:var(--amber);}
+.alert-teal .alert-title{color:var(--teal);}
+.alert p{font-size:13.5px;margin:0;color:var(--text);}
+
+/* ICP / ANTI CARDS */
+.icp-card{background:var(--surface);border:1.5px solid var(--teal);border-radius:10px;padding:24px;margin-bottom:24px;}
+.anti-card{background:var(--surface);border:1.5px solid var(--red);border-radius:10px;padding:24px;margin-bottom:24px;}
+.icp-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.icp-badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
+.icp-badge-green{background:var(--teal-bg);color:var(--teal);}
+.icp-badge-red{background:var(--red-bg);color:var(--red);}
+.icp-name{font-family:'DM Serif Display',serif;font-size:20px;}
+.trait-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+.trait{background:var(--bg);border-radius:6px;padding:12px 14px;}
+.trait-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--label);margin-bottom:4px;}
+.trait-val{font-size:13.5px;font-weight:500;line-height:1.4;}
+
+/* PROGRESS */
+.progress-row{margin-bottom:14px;}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+.progress-label span:last-child{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;}
+.progress-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:4px;}
+.fill-teal{background:var(--teal);} .fill-amber{background:var(--amber);} .fill-red{background:var(--red);}
+
+/* ACTION ITEMS */
+.action-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:12px;}
+.action-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.action-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;background:var(--navy);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.action-area{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.action-area-red{color:var(--red);} .action-area-amber{color:var(--amber);} .action-area-teal{color:var(--teal);}
+.action-item h4{margin:0 0 6px;font-size:14.5px;font-weight:600;}
+.action-item p{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+.priority-label{font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:24px 0 12px;}
+.comp-highlight{background:color-mix(in srgb,var(--amber) 6%,var(--surface));}
+
+/* FOOTER */
+.report-footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--label);}
+
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .trait-grid{grid-template-columns:1fr;}
+  .lang-toggle{position:static;margin-top:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="report-header">
+  <div class="report-header-inner">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('pt')" id="btn-pt">PT</button>
+      <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+    </div>
+    <div class="report-eyebrow" data-key="header_eyebrow">TripleTen Brasil · Inteligência Comercial</div>
+    <h1 class="report-title" data-key="header_title">Análise de ICP e Estratégia de Posicionamento<br><em>MBA em Data Analytics &amp; AI</em></h1>
+    <p class="report-subtitle" data-key="header_subtitle">Diagnóstico de funil, definição de Ideal Customer Profile, mapeamento Anti-ICP e plano de ação para elevar conversão e engajamento.</p>
+    <div class="report-meta">
+      <div class="meta-item"><span data-key="meta_by">Preparado por</span><strong>Head of Sales · TripleTen Brasil</strong></div>
+      <div class="meta-item"><span data-key="meta_date">Data</span><strong>Setembro 2026</strong></div>
+      <div class="meta-item"><span data-key="meta_base">Base analisada</span><strong data-key="meta_base_val">26 alunos · 5 coortes</strong></div>
+      <div class="meta-item"><span data-key="meta_priority">Prioridade</span><strong data-key="meta_priority_val">Alta</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc-bar">
+  <div class="toc-inner">
+    <a class="toc-link" href="#resumo" data-key="toc_1">Resumo</a>
+    <a class="toc-link" href="#alunos" data-key="toc_2">Base de Alunos</a>
+    <a class="toc-link" href="#comunicacao" data-key="toc_3">Comunicação</a>
+    <a class="toc-link" href="#concorrencia" data-key="toc_4">Concorrência</a>
+    <a class="toc-link" href="#gargalos" data-key="toc_5">Gargalos</a>
+    <a class="toc-link" href="#icp" data-key="toc_6">ICP Ideal</a>
+    <a class="toc-link" href="#anti-icp" data-key="toc_7">Anti-ICP</a>
+    <a class="toc-link" href="#plano" data-key="toc_8">Plano de Ação</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<!-- 01 RESUMO -->
+<section class="section" id="resumo">
+  <div class="section-eyebrow ey-amber" data-key="s1_eyebrow">01 · Resumo Executivo</div>
+  <h2 class="section-title" data-key="s1_title">O problema central: produto executivo sendo vendido como bootcamp</h2>
+  <p class="section-lead" data-key="s1_lead">A análise identifica um desalinhamento sistêmico entre o produto real (MBA de upskilling executivo) e a comunicação praticada (transição de carreira, "do zero ao profissional"), gerando leads inadequados, baixa conversão e inatividade pós-matrícula.</p>
+
+  <div class="stat-grid">
+    <div class="stat-tile"><div class="num num-red">42%</div><div class="lbl" data-key="stat1">dos alunos inativos ou em abandono (inativo 15d + silent + drop)</div></div>
+    <div class="stat-tile"><div class="num num-amber">57%</div><div class="lbl" data-key="stat2">com ritmo de aprendizado <em>low</em> (risco elevado de churn)</div></div>
+    <div class="stat-tile"><div class="num num-teal">76%</div><div class="lbl" data-key="stat3">de ativação em 7 dias — queda para 52% em 42 dias</div></div>
+    <div class="stat-tile"><div class="num num-navy">R$34k</div><div class="lbl" data-key="stat4">investimento total vs. R$14k da XP Educação sem diferencial claro</div></div>
+  </div>
+
+  <div class="alert alert-red">
+    <div class="alert-title" data-key="alert1_title">🚨 Achado Crítico — Mensagem da Sales Presentation</div>
+    <p data-key="alert1_body">A apresentação comercial usa o slogan <strong>"Do Zero ao Profissional em TI em menos de 1 ano"</strong> — linguagem de bootcamp de transição de carreira. Isso é incompatível com um MBA executivo de R$34.340, e atrai ativamente o perfil errado de lead para a equipe de closers.</p>
+  </div>
+  <div class="alert alert-amber">
+    <div class="alert-title" data-key="alert2_title">⚠️ Achado Importante — Duplo Público na Landing Page</div>
+    <p data-key="alert2_body">A landing page tenta comunicar simultaneamente com dois perfis opostos: profissionais em transição de carreira ("faça o teste vocacional") e executivos buscando upskilling ("Torne-se quem decide"). Essa ambiguidade dilui a proposta de valor e reduz a percepção de exclusividade do produto.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 02 ALUNOS -->
+<section class="section" id="alunos">
+  <div class="section-eyebrow ey-navy" data-key="s2_eyebrow">02 · Análise da Base de Alunos</div>
+  <h2 class="section-title" data-key="s2_title">Radiografia das 5 coortes ativas</h2>
+  <p class="section-lead" data-key="s2_lead">Análise de 26 alunos matriculados extraída do sistema de gestão (Coortes 1–5), com foco em engajamento, ritmo e permanência.</p>
+
+  <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;" data-key="s2_h3a">Status por coorte</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th data-key="th_cohort">Coorte</th><th data-key="th_start">Início</th><th data-key="th_students">Alunos</th>
+        <th data-key="th_studying">Estudando</th><th data-key="th_inactive">Inativo 15d</th><th data-key="th_silent">Silent</th><th data-key="th_drop">Drop</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><strong data-key="cohort1">Coorte 1</strong></td><td>jun/2026</td><td>12</td><td><span class="tag tag-green">7</span></td><td><span class="tag tag-amber">4</span></td><td><span class="tag">0</span></td><td><span class="tag tag-red">1</span></td></tr>
+        <tr><td><strong data-key="cohort2">Coorte 2</strong></td><td>jul/2026</td><td>5</td><td><span class="tag tag-green">3</span></td><td><span class="tag tag-amber">2</span></td><td><span class="tag">0</span></td><td><span class="tag">0</span></td></tr>
+        <tr><td><strong data-key="cohort3">Coorte 3</strong></td><td>ago/2026</td><td>5</td><td><span class="tag tag-green">4</span></td><td><span class="tag">0</span></td><td><span class="tag">0</span></td><td><span class="tag tag-red">1</span></td></tr>
+        <tr><td><strong data-key="cohort4">Coorte 4</strong></td><td>set/2026</td><td>2</td><td><span class="tag">0</span></td><td><span class="tag">0</span></td><td><span class="tag tag-red">2</span></td><td><span class="tag">0</span></td></tr>
+        <tr><td><strong data-key="cohort5">Coorte 5</strong></td><td>out/2026</td><td>1</td><td><span class="tag">0</span></td><td><span class="tag">0</span></td><td><span class="tag tag-red">1</span></td><td><span class="tag">0</span></td></tr>
+        <tr style="font-weight:600;">
+          <td data-key="total_label">Total</td><td>—</td><td>25</td>
+          <td style="color:var(--teal)">14 (56%)</td><td style="color:var(--amber)">6 (24%)</td>
+          <td style="color:var(--red)">3 (12%)</td><td style="color:var(--red)">2 (8%)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 14px;" data-key="s2_h3b">Funil de Ativação Pós-Matrícula</h3>
+  <p style="font-size:13.5px;color:var(--muted);margin-bottom:18px;" data-key="s2_funnel_lead">Percentual de alunos que ativaram a plataforma em cada janela de tempo. A queda de 24 p.p. entre 7 e 42 dias aponta desengajamento crítico nas primeiras 6 semanas.</p>
+  <div class="funnel">
+    <div class="funnel-step"><div class="funnel-pct">76%</div><div class="funnel-body"><strong data-key="f1_title">Ativação em 7 dias (S1)</strong><span data-key="f1_body">19 de 25 alunos fizeram primeiro acesso significativo na primeira semana</span></div></div>
+    <div class="funnel-step"><div class="funnel-pct">64%</div><div class="funnel-body"><strong data-key="f2_title">Ativação em 21 dias (S2)</strong><span data-key="f2_body">16 de 25 mantiveram engajamento até a terceira semana — perda de 12 p.p.</span></div></div>
+    <div class="funnel-step"><div class="funnel-pct drop">52%</div><div class="funnel-body"><strong data-key="f3_title">Ativação em 42 dias (S3)</strong><span data-key="f3_body">13 de 25 continuaram ativos até 6 semanas — perda acumulada de 24 p.p.</span></div></div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 14px;" data-key="s2_h3c">Ritmo de Aprendizado</h3>
+  <div class="progress-row"><div class="progress-label"><span data-key="pace_low">Low (baixo)</span><span>57% — 13 alunos</span></div><div class="progress-track"><div class="progress-fill fill-amber" style="width:57%"></div></div></div>
+  <div class="progress-row"><div class="progress-label"><span data-key="pace_high">High (alto)</span><span>30% — 7 alunos</span></div><div class="progress-track"><div class="progress-fill fill-teal" style="width:30%"></div></div></div>
+  <div class="progress-row"><div class="progress-label"><span data-key="pace_error">Sem dado / Error</span><span>13% — 3 alunos</span></div><div class="progress-track"><div class="progress-fill fill-red" style="width:13%"></div></div></div>
+
+  <div class="alert alert-amber" style="margin-top:18px;">
+    <div class="alert-title" data-key="alert3_title">⚠️ Hipótese: Desalinhamento de Expectativa de Carga</div>
+    <p data-key="alert3_body">O MBA exige 15–20h/semana (680h em 9 meses). Alunos com ritmo <em>low</em> provavelmente chegaram ao programa sem entender o compromisso real de tempo — consequência direta de uma comunicação que enfatiza flexibilidade sem evidenciar o nível de dedicação exigido de um MBA executivo.</p>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 14px;" data-key="s2_h3d">Perfis com Maior Sucesso (padrão emergente)</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th data-key="th_name">Aluno</th><th data-key="th_cohort2">Coorte</th><th data-key="th_sprint">Sprint Atual</th><th data-key="th_progress">Progresso</th><th data-key="th_pace">Ritmo</th><th data-key="th_status">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Douglas Cantú</td><td>1</td><td data-key="sprint_py">7 – Python</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--teal)">93.5%</td><td><span class="tag tag-green">high</span></td><td><span class="tag tag-green" data-key="studying">studying</span></td></tr>
+        <tr><td>Paola Nonino</td><td>1</td><td data-key="sprint_py2">7 – Python</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--teal)">93.5%</td><td><span class="tag tag-green">high</span></td><td><span class="tag tag-green" data-key="studying2">studying</span></td></tr>
+        <tr><td>Ester De Lucena</td><td>3</td><td data-key="sprint_qual">3 – Qualidade</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--teal)">92.3%</td><td><span class="tag tag-green">high</span></td><td><span class="tag tag-green" data-key="studying3">studying</span></td></tr>
+        <tr><td>Roberto Freitas</td><td>2</td><td data-key="sprint_ins">4 – Insights</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--teal)">95.2%</td><td><span class="tag tag-amber">low</span></td><td><span class="tag tag-green" data-key="studying4">studying</span></td></tr>
+        <tr><td>Gabriel Baruque</td><td>2</td><td data-key="sprint_ins2">4 – Insights</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--red)">0%</td><td><span class="tag tag-amber">low</span></td><td><span class="tag tag-red" data-key="inactive">inativo 15d</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 03 COMUNICAÇÃO -->
+<section class="section" id="comunicacao">
+  <div class="section-eyebrow ey-amber" data-key="s3_eyebrow">03 · Auditoria de Comunicação Digital</div>
+  <h2 class="section-title" data-key="s3_title">O produto certo com a mensagem errada</h2>
+  <p class="section-lead" data-key="s3_lead">Análise da landing page, Sales Presentation e presença digital revela inconsistências estruturais no posicionamento que geram confusão no topo e no meio do funil.</p>
+
+  <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;" data-key="s3_h3a">Landing Page — Diagnóstico por Elemento</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th data-key="th_elem">Elemento</th><th data-key="th_msg">O que comunica hoje</th><th data-key="th_impact">Impacto</th><th data-key="th_align">Alinhamento</th></tr></thead>
+      <tbody>
+        <tr><td data-key="elem1"><strong>Headline principal</strong></td><td data-key="elem1_msg">"Torne-se quem decide" — linguagem executiva</td><td data-key="elem1_imp">Positivo para ICP correto</td><td><span class="tag tag-green">✓ OK</span></td></tr>
+        <tr><td data-key="elem2"><strong>CTA "Faça o teste vocacional"</strong></td><td data-key="elem2_msg">Convida quem não sabe a carreira que quer — perfil de entrada, não MBA</td><td data-key="elem2_imp">Atrai Anti-ICP diretamente</td><td><span class="tag tag-red" data-key="problem">✗ Problema</span></td></tr>
+        <tr><td data-key="elem3"><strong>Público declarado</strong></td><td data-key="elem3_msg">Lista 4 perfis simultâneos: transição, gestores, 40+, corporativo</td><td data-key="elem3_imp">Dilui proposta; sem prioridade clara</td><td><span class="tag tag-amber" data-key="review">⚠ Revisar</span></td></tr>
+        <tr><td data-key="elem4"><strong>Promessa salarial</strong></td><td data-key="elem4_msg">"R$19.600 expectativa salarial com Python, SQL, BI"</td><td data-key="elem4_imp">Linguagem de primeiro emprego em TI — bootcamp</td><td><span class="tag tag-red" data-key="problem2">✗ Problema</span></td></tr>
+        <tr><td data-key="elem5"><strong>Pré-requisitos</strong></td><td data-key="elem5_msg">Ausentes — "gestores não precisam virar devs"</td><td data-key="elem5_imp">Não filtra entrada; gera expectativas irreais</td><td><span class="tag tag-amber" data-key="review2">⚠ Revisar</span></td></tr>
+        <tr><td data-key="elem6"><strong>Certificações</strong></td><td data-key="elem6_msg">AWS Academy + Arizona State University + MEC 5</td><td data-key="elem6_imp">Forte diferencial — bem posicionado</td><td><span class="tag tag-green">✓ OK</span></td></tr>
+        <tr><td data-key="elem7"><strong>Preço visível</strong></td><td data-key="elem7_msg">R$3.570/mês — antes de qualificação</td><td data-key="elem7_imp">Pode desqualificar sem contexto de valor</td><td><span class="tag tag-amber" data-key="review3">⚠ Revisar</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert alert-red">
+    <div class="alert-title" data-key="alert4_title">🚨 Maior Gap: Sales Presentation usa posicionamento de Bootcamp</div>
+    <p data-key="alert4_body">O material entregue pelo Closer contém a frase <strong>"Do Zero ao Profissional em TI em menos de 1 ano"</strong> — mensagem central dos bootcamps de transição. Um executivo com 10+ anos de experiência que recebe essa apresentação não se identifica com o produto. Isso explica objeções de "não é para mim" e conversões perdidas no fechamento.</p>
+  </div>
+  <div class="alert alert-amber">
+    <div class="alert-title" data-key="alert5_title">⚠️ Redes Sociais — Ausência de Prova Social Executiva</div>
+    <p data-key="alert5_body">O Instagram e LinkedIn da TripleTen carecem de depoimentos de profissionais em gestão usando o MBA como alavanca de crescimento. O conteúdo atual projeta imagem de escola de TI para iniciantes, não de formação executiva.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 04 CONCORRÊNCIA -->
+<section class="section" id="concorrencia">
+  <div class="section-eyebrow ey-navy" data-key="s4_eyebrow">04 · Análise de Mercado e Concorrência</div>
+  <h2 class="section-title" data-key="s4_title">Onde a TripleTen está parada no mapa competitivo</h2>
+  <p class="section-lead" data-key="s4_lead">O mercado de MBAs em Data/IA no Brasil tem dois clusters: programas premium de marca forte (FIA, FIAP) e programas acessíveis voltados ao executivo não-técnico (XP Educação). A TripleTen não ocupa com clareza nenhum dos dois.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th data-key="th_inst">Instituição</th><th data-key="th_prod">Produto</th><th data-key="th_price">Preço Total</th><th data-key="th_dur">Duração</th><th data-key="th_target">Público-Alvo</th><th data-key="th_diff">Diferencial</th></tr></thead>
+      <tbody>
+        <tr class="comp-highlight"><td><strong>TripleTen Brasil</strong></td><td data-key="tt_prod">MBA DA &amp; AI</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600">R$34.340</td><td data-key="tt_dur">9 meses · 680h</td><td data-key="tt_target">Duplo (conflitante)</td><td data-key="tt_diff">18 projetos, AWS, ASU, MEC 5</td></tr>
+        <tr><td><strong>FIA Labdata</strong></td><td data-key="fia_prod">Advanced MBA Analytics &amp; IA</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600">R$36.500–52k</td><td data-key="fia_dur">552h · 2×/semana</td><td data-key="fia_target">Executivos e gestores</td><td data-key="fia_diff">AMBA/EFMD/AACSB, mentoria C-level, FEA-USP</td></tr>
+        <tr><td><strong>FIAP</strong></td><td data-key="fiap_prod">MBA Data Science &amp; AI</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600">~R$20–28k</td><td data-key="fiap_dur">8–12 meses</td><td data-key="fiap_target">TI e negócios</td><td data-key="fiap_diff">Marca forte em SP, presencial + online, IBM</td></tr>
+        <tr><td><strong>XP Educação</strong></td><td data-key="xp_prod">MBA IA para Negócios</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600">R$14.070</td><td data-key="xp_dur">6 meses · flexível</td><td data-key="xp_target">Executivos sem base técnica</td><td data-key="xp_diff">Preço, marca XP, foco estratégico sem exig. técnica</td></tr>
+        <tr><td><strong>Insper</strong></td><td data-key="ins_prod">IA Aplicada aos Negócios</td><td style="font-family:'JetBrains Mono',monospace;font-weight:600">R$8.250</td><td data-key="ins_dur">32h intensivo</td><td data-key="ins_target">Executivos 2+ anos exp.</td><td data-key="ins_diff">Marca premium, processo seletivo, presencial</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert alert-amber">
+    <div class="alert-title" data-key="alert6_title">⚠️ Diagnóstico de Posicionamento Competitivo</div>
+    <p data-key="alert6_body">A TripleTen cobra 2,4× mais do que a XP Educação (que comunica melhor para executivos não-técnicos) e custa praticamente o mesmo que a FIA (que tem credenciais acadêmicas globais). Sem posicionamento diferenciado claro, o produto fica no "meio do caminho" e perde para ambos os extremos na percepção de valor.</p>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 10px;" data-key="s4_opp_title">Oportunidade não explorada</h3>
+  <p style="font-size:13.5px;color:var(--muted);" data-key="s4_opp_body">Nenhum concorrente combina <strong>18 projetos práticos reais</strong> + <strong>certificação AWS Academy e Arizona State University</strong> + <strong>formato 100% assíncrono compatível com agenda executiva</strong>. Esse triângulo é o diferencial genuíno da TripleTen e deve ser o centro da comunicação — não um bullet no rodapé da landing page.</p>
+</section>
+
+<hr class="divider">
+
+<!-- 05 GARGALOS -->
+<section class="section" id="gargalos">
+  <div class="section-eyebrow ey-red" data-key="s5_eyebrow">05 · Mapeamento de Gargalos do Funil</div>
+  <h2 class="section-title" data-key="s5_title">Onde o funil vaza — etapa por etapa</h2>
+  <p class="section-lead" data-key="s5_lead">Cada etapa do funil carrega um problema específico de posicionamento ou qualificação que reduz a chegada de leads com perfil executivo real.</p>
+
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--red)">1</div><span class="action-area action-area-red" data-key="g1_area">ATRAÇÃO · Instagram / LinkedIn / Google</span></div>
+    <h4 data-key="g1_title">Anúncios e conteúdo não filtram decisores de curiosos</h4>
+    <p data-key="g1_body">O criativo atual não exige nível de experiência mínimo, não qualifica cargo nem renda, e usa linguagem ("do zero", "novo emprego") que ressoa com transição de carreira, não com upskilling executivo. Resultado: volume alto de leads fora do perfil chegando ao SDR.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--red)">2</div><span class="action-area action-area-red" data-key="g2_area">NUTRIÇÃO · Landing Page + Formulário</span></div>
+    <h4 data-key="g2_title">Ausência de filtro qualificador antes do agendamento</h4>
+    <p data-key="g2_body">O formulário de captura não pergunta cargo atual, tempo de experiência ou objetivo com o MBA. CTA "Faça o teste vocacional" posiciona o produto como escolha exploratória, não decisão executiva.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--amber)">3</div><span class="action-area action-area-amber" data-key="g3_area">QUALIFICAÇÃO · SDR</span></div>
+    <h4 data-key="g3_title">Roteiro não segmenta por nível de experiência gerencial</h4>
+    <p data-key="g3_body">O script do SDR precisa incluir perguntas sobre cargo atual, anos de experiência e motivação (upskilling vs. transição). Sem esse filtro, leads inadequados chegam ao Closer e consomem capacidade sem possibilidade de conversão.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--amber)">4</div><span class="action-area action-area-amber" data-key="g4_area">FECHAMENTO · Closer</span></div>
+    <h4 data-key="g4_title">Sales Presentation desalinhada com perfil executivo</h4>
+    <p data-key="g4_body">A apresentação usa posicionamento de bootcamp. Para um lead executivo, essa narrativa cria dissonância e reduz percepção de valor. O Closer perde tempo re-explicando o produto em vez de construir sobre a dor estratégica do lead.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--teal)">5</div><span class="action-area action-area-teal" data-key="g5_area">PÓS-MATRÍCULA · Onboarding</span></div>
+    <h4 data-key="g5_title">Expectativa de carga horária não comunicada antes da matrícula</h4>
+    <p data-key="g5_body">42% dos alunos tornam-se inativos após a matrícula. O engajamento cai de 76% para 52% nas primeiras 6 semanas. Alunos chegam sem entender o volume de dedicação exigido — falha de gestão de expectativa na etapa de venda.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 06 ICP -->
+<section class="section" id="icp">
+  <div class="section-eyebrow ey-teal" data-key="s6_eyebrow">06 · Perfil de Cliente Ideal (ICP)</div>
+  <h2 class="section-title" data-key="s6_title">Quem é o aluno que tem mais sucesso e fecha com maior probabilidade</h2>
+  <p class="section-lead" data-key="s6_lead">O ICP do MBA DA&amp;AI da TripleTen é o profissional sênior que já tem base profissional consolidada e busca decisivamente ascender para posições estratégicas usando dados e IA como alavanca.</p>
+
+  <div class="icp-card">
+    <div class="icp-header">
+      <span class="icp-badge icp-badge-green" data-key="icp1_badge">ICP Principal</span>
+      <span class="icp-name" data-key="icp1_name">O Gestor em Ascensão</span>
+    </div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="tr_age">Faixa etária</div><div class="trait-val" data-key="tr_age_v">28–45 anos</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_role">Cargo atual</div><div class="trait-val" data-key="tr_role_v">Analista Sênior, Coordenador, Gerente, Líder de Equipe</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_exp">Experiência profissional</div><div class="trait-val" data-key="tr_exp_v">5–15 anos na mesma área ou setor</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_area">Área de atuação</div><div class="trait-val" data-key="tr_area_v">Financeiro, Operações, Marketing, RH, Comercial, Negócios</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_goal">Objetivo com o MBA</div><div class="trait-val" data-key="tr_goal_v">Galgar para posição de liderança / entrar em área de dados como gestor</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_income">Renda mensal atual</div><div class="trait-val" data-key="tr_income_v">R$8.000–25.000 (capacidade de R$3.570/mês)</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_time">Disponibilidade real</div><div class="trait-val" data-key="tr_time_v">15–20h/semana — empregado, comprometido, disciplinado</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_tech">Base técnica mínima</div><div class="trait-val" data-key="tr_tech_v">Excel avançado ou algum contato com dados na função atual</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_pain">Motivação principal (dores)</div><div class="trait-val" data-key="tr_pain_v">Sente que dados são essenciais mas não domina; medo de ser ultrapassado pela IA; quer tomar decisões mais embasadas como líder</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr_signals">Sinais de qualificação</div><div class="trait-val" data-key="tr_signals_v">LinkedIn ativo, empresa com 50+ funcionários, já gerencia projetos ou pessoas, mencionou stagnação ou promoção recusada</div></div>
+    </div>
+  </div>
+
+  <div class="icp-card">
+    <div class="icp-header">
+      <span class="icp-badge icp-badge-green" data-key="icp2_badge">ICP Secundário</span>
+      <span class="icp-name" data-key="icp2_name">O Executivo Corporativo</span>
+    </div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="tr2_role">Cargo atual</div><div class="trait-val" data-key="tr2_role_v">Diretor, VP, Gerente Sênior, Head of</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr2_ctx">Contexto</div><div class="trait-val" data-key="tr2_ctx_v">Empresa com cultura de dados emergente; precisa liderar times de analytics sem background técnico</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr2_goal">Objetivo</div><div class="trait-val" data-key="tr2_goal_v">Credencial para legitimar decisões data-driven; entender o que sua equipe de dados faz</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr2_price">Sensibilidade a preço</div><div class="trait-val" data-key="tr2_price_v">Baixa — prioriza ROI de carreira e reconhecimento da certificação</div></div>
+      <div class="trait"><div class="trait-label" data-key="tr2_channel">Canal de entrada</div><div class="trait-val" data-key="tr2_channel_v">LinkedIn (conteúdo técnico-executivo), indicação, eventos corporativos</div></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:8px 0 14px;" data-key="s6_q_title">Perguntas de Qualificação para SDR / Closer</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th data-key="q_question">Pergunta</th><th data-key="q_yes">Resposta que qualifica (ICP)</th><th data-key="q_no">Resposta que desqualifica</th></tr></thead>
+      <tbody>
+        <tr><td data-key="q1">"Qual é seu cargo e há quantos anos está nessa área?"</td><td data-key="q1_yes">Analista sênior+, gestor, 5+ anos</td><td data-key="q1_no">Recém-formado, estágio, "ainda não trabalho com isso"</td></tr>
+        <tr><td data-key="q2">"O que te trouxe a buscar um MBA agora?"</td><td data-key="q2_yes">Crescer para liderança, usar dados estrategicamente</td><td data-key="q2_no">"Quero mudar de área", "não gosto do meu trabalho atual"</td></tr>
+        <tr><td data-key="q3">"Você tem 15–20h por semana para dedicar ao MBA?"</td><td data-key="q3_yes">Sim, já organizo meu tempo assim</td><td data-key="q3_no">Hesitação, "depende do mês", "às vezes"</td></tr>
+        <tr><td data-key="q4">"Você já trabalha com dados ou análise na sua função?"</td><td data-key="q4_yes">Excel, relatórios, KPIs, BI básico</td><td data-key="q4_no">"Nunca", "quero começar do zero"</td></tr>
+        <tr><td data-key="q5">"Como você avalia a parcela de R$3.570?"</td><td data-key="q5_yes">"Está dentro do esperado" / "consigo viabilizar"</td><td data-key="q5_no">"É muito alto", "preciso de parcelamento maior"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 07 ANTI-ICP -->
+<section class="section" id="anti-icp">
+  <div class="section-eyebrow ey-red" data-key="s7_eyebrow">07 · Matriz Anti-ICP</div>
+  <h2 class="section-title" data-key="s7_title">Quem desqualificar no início do funil — e por quê</h2>
+  <p class="section-lead" data-key="s7_lead">Desqualificar cedo economiza tempo do SDR e do Closer, reduz churn pós-matrícula e protege a reputação do produto. Esses perfis não são "alunos ruins" — são alunos para outro produto (bootcamp).</p>
+
+  <div class="anti-card">
+    <div class="icp-header"><span class="icp-badge icp-badge-red" data-key="anti1_badge">Anti-ICP #1</span><span class="icp-name" data-key="anti1_name">O Transicionador Sem Base</span></div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="a1_profile">Perfil</div><div class="trait-val" data-key="a1_profile_v">Recém-formado ou profissional sem nenhuma exposição a dados</div></div>
+      <div class="trait"><div class="trait-label" data-key="a1_signal">Sinal de identificação</div><div class="trait-val" data-key="a1_signal_v">"Quero mudar de carreira para dados/TI", "nunca trabalhei com Excel ou BI"</div></div>
+      <div class="trait"><div class="trait-label" data-key="a1_why">Por que desqualificar</div><div class="trait-val" data-key="a1_why_v">Produto não foi desenhado para iniciantes absolutos — vai abandonar ou pedir reembolso</div></div>
+      <div class="trait"><div class="trait-label" data-key="a1_redirect">Redirecionamento</div><div class="trait-val" data-key="a1_redirect_v">Bootcamp de Data Analytics como pré-requisito</div></div>
+    </div>
+  </div>
+
+  <div class="anti-card">
+    <div class="icp-header"><span class="icp-badge icp-badge-red" data-key="anti2_badge">Anti-ICP #2</span><span class="icp-name" data-key="anti2_name">O Caçador de Emprego Imediato</span></div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="a2_profile">Perfil</div><div class="trait-val" data-key="a2_profile_v">Desempregado buscando recolocação rápida com a menor despesa possível</div></div>
+      <div class="trait"><div class="trait-label" data-key="a2_signal">Sinal de identificação</div><div class="trait-val" data-key="a2_signal_v">"Preciso de emprego em 3 meses", "tem garantia de emprego?", foco em velocidade e custo</div></div>
+      <div class="trait"><div class="trait-label" data-key="a2_why">Por que desqualificar</div><div class="trait-val" data-key="a2_why_v">MBA de 9 meses não é solução de recolocação imediata; expectativa desalinhada = churn certo</div></div>
+      <div class="trait"><div class="trait-label" data-key="a2_redirect">Redirecionamento</div><div class="trait-val" data-key="a2_redirect_v">Bootcamp com career services incluído</div></div>
+    </div>
+  </div>
+
+  <div class="anti-card">
+    <div class="icp-header"><span class="icp-badge icp-badge-red" data-key="anti3_badge">Anti-ICP #3</span><span class="icp-name" data-key="anti3_name">O Sensível ao Preço</span></div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="a3_profile">Perfil</div><div class="trait-val" data-key="a3_profile_v">Interessado mas com renda que não suporta R$3.570/mês confortavelmente</div></div>
+      <div class="trait"><div class="trait-label" data-key="a3_signal">Sinal de identificação</div><div class="trait-val" data-key="a3_signal_v">Pergunta insistente sobre desconto, compara diretamente com XP (R$390/mês), pede parcelamento adicional</div></div>
+      <div class="trait"><div class="trait-label" data-key="a3_why">Por que desqualificar</div><div class="trait-val" data-key="a3_why_v">Inadimplência e abandono por pressão financeira; não percebe valor suficiente para o preço</div></div>
+      <div class="trait"><div class="trait-label" data-key="a3_redirect">Redirecionamento</div><div class="trait-val" data-key="a3_redirect_v">XP Educação ou programas com financiamento estudantil</div></div>
+    </div>
+  </div>
+
+  <div class="anti-card">
+    <div class="icp-header"><span class="icp-badge icp-badge-red" data-key="anti4_badge">Anti-ICP #4</span><span class="icp-name" data-key="anti4_name">O Sem Tempo Real</span></div>
+    <div class="trait-grid">
+      <div class="trait"><div class="trait-label" data-key="a4_profile">Perfil</div><div class="trait-val" data-key="a4_profile_v">Executivo com agenda lotada que superestima capacidade de dedicação</div></div>
+      <div class="trait"><div class="trait-label" data-key="a4_signal">Sinal de identificação</div><div class="trait-val" data-key="a4_signal_v">Hesita na pergunta de carga horária, viagens frequentes, filhos pequenos + trabalho intenso</div></div>
+      <div class="trait"><div class="trait-label" data-key="a4_why">Por que desqualificar</div><div class="trait-val" data-key="a4_why_v">680h em 9 meses = ~17h/semana. Sem comprometimento real, vira estatística de inatividade</div></div>
+      <div class="trait"><div class="trait-label" data-key="a4_redirect">Redirecionamento</div><div class="trait-val" data-key="a4_redirect_v">Insper (32h intensivo) ou programas de extensão de menor carga</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 08 PLANO -->
+<section class="section" id="plano">
+  <div class="section-eyebrow ey-teal" data-key="s8_eyebrow">08 · Plano de Ação</div>
+  <h2 class="section-title" data-key="s8_title">Correções práticas por etapa do funil</h2>
+  <p class="section-lead" data-key="s8_lead">Recomendações acionáveis organizadas por prioridade, cobrindo landing page, comunicação digital, roteiro comercial e onboarding.</p>
+
+  <p class="priority-label" style="color:var(--red);" data-key="p_urgent">🔴 Urgente — Impacto imediato na conversão</p>
+
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--red)">1</div><span class="action-area action-area-red" data-key="a1_area">Sales Presentation</span></div>
+    <h4 data-key="a1_h4">Substituir posicionamento "do zero" por narrativa executiva</h4>
+    <p data-key="a1_p">Remover toda referência a "do zero ao profissional em TI". Substituir pelo eixo: <em>"Para quem já tem uma carreira e quer elevar sua capacidade de liderança com dados e IA."</em> O material deve abrir com a dor do executivo sênior, não com a do iniciante.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--red)">2</div><span class="action-area action-area-red" data-key="a2_area">Script SDR</span></div>
+    <h4 data-key="a2_h4">Incluir 3 perguntas de qualificação mínima obrigatórias no agendamento</h4>
+    <p data-key="a2_p">Cargo atual + anos de experiência + motivação de carreira. Lead que declare "quero mudar de área completamente" ou "nunca trabalhei com dados" deve ser redirecionado para o bootcamp antes do agendamento com o Closer.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--red)">3</div><span class="action-area action-area-red" data-key="a3_area">Landing Page — CTA</span></div>
+    <h4 data-key="a3_h4">Remover "Faça o teste vocacional" — substituir por CTA executivo</h4>
+    <p data-key="a3_p">Substituir por: <em>"Veja se o programa é para você"</em> com 3 critérios declarados (experiência mínima, carga horária, objetivos). Isso auto-filtra antes do agendamento.</p>
+  </div>
+
+  <p class="priority-label" style="color:var(--amber);margin-top:24px;" data-key="p_short">🟡 Curto Prazo — Qualidade do funil e prova social</p>
+
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--amber)">4</div><span class="action-area action-area-amber" data-key="a4_area">Landing Page — Público</span></div>
+    <h4 data-key="a4_h4">Unificar comunicação em torno do perfil executivo/gestor como protagonista</h4>
+    <p data-key="a4_p">Criar seção "Este MBA é para você se..." com critérios: 5+ anos de experiência, cargo de liderança ou interesse em assumir um, e contato com dados na função atual. O perfil de transição deve ser explicitamente redirecionado.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--amber)">5</div><span class="action-area action-area-amber" data-key="a5_area">Redes Sociais</span></div>
+    <h4 data-key="a5_h4">Criar série de conteúdo de prova social executiva no LinkedIn e Instagram</h4>
+    <p data-key="a5_p">Depoimentos em vídeo de alunos com perfil gestor falando sobre impacto na carreira (promoção, novo cargo, projeto de dados aprovado). Conteúdo que posiciona o MBA como ferramenta de liderança, não de entrada em TI.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--amber)">6</div><span class="action-area action-area-amber" data-key="a6_area">Formulário de Captura</span></div>
+    <h4 data-key="a6_h4">Adicionar campos de qualificação no formulário de agendamento</h4>
+    <p data-key="a6_p">Cargo atual, anos de experiência (faixa: 0–2, 3–5, 5–10, 10+) e objetivo principal. Leads abaixo do threshold vão para fluxo de nutrição do bootcamp, não para SDR do MBA.</p>
+  </div>
+
+  <p class="priority-label" style="color:var(--teal);margin-top:24px;" data-key="p_medium">🟢 Médio Prazo — Retenção e NPS</p>
+
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--teal)">7</div><span class="action-area action-area-teal" data-key="a7_area">Onboarding Pós-Matrícula</span></div>
+    <h4 data-key="a7_h4">Criar sessão de alinhamento de expectativas obrigatória na semana 0</h4>
+    <p data-key="a7_p">Sessão ao vivo ou vídeo + formulário de compromisso detalhando: 680h totais, ritmo esperado por sprint, o que acontece se o aluno ficar inativo. O aluno assina um "compromisso de aprendizado" — aumenta responsabilidade e reduz abandono silencioso.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--teal)">8</div><span class="action-area action-area-teal" data-key="a8_area">Discurso do Closer</span></div>
+    <h4 data-key="a8_h4">Reformular a reunião de consultoria em torno da dor estratégica do executivo</h4>
+    <p data-key="a8_p">Abrir com perguntas de mapeamento antes de apresentar o produto: "Qual é a maior frustração na sua posição atual em relação a dados?" — só então apresentar o MBA como solução para essa dor específica.</p>
+  </div>
+  <div class="action-item">
+    <div class="action-header"><div class="action-num" style="background:var(--teal)">9</div><span class="action-area action-area-teal" data-key="a9_area">Posicionamento Competitivo</span></div>
+    <h4 data-key="a9_h4">Articular os três diferenciais únicos acima da dobra na landing page</h4>
+    <p data-key="a9_p"><strong>18 projetos práticos reais</strong> + <strong>certificação AWS Academy e Arizona State University</strong> + <strong>formato 100% assíncrono compatível com agenda executiva</strong>. Esses três pontos juntos e em destaque visual — não dispersos ao longo do conteúdo.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<div class="report-footer">
+  <p data-key="footer1"><strong>TripleTen Brasil — Análise Confidencial de Uso Interno</strong> · Setembro 2026</p>
+  <p data-key="footer2">Fontes: base de 26 alunos (CSV exportado do sistema de gestão), auditoria de landing page e Sales Presentation, pesquisa de mercado em FIA, XP Educação, FIAP e Insper. Para enriquecer com dados de transcrições (Elephan) e funil de conversão (HubSpot), conectar essas fontes em etapa seguinte.</p>
+</div>
+
+</div><!-- end .page-wrap -->
+
+<script>
+const T = {
+  pt: {
+    header_eyebrow: "TripleTen Brasil · Inteligência Comercial",
+    header_title: "Análise de ICP e Estratégia de Posicionamento<br><em>MBA em Data Analytics &amp; AI</em>",
+    header_subtitle: "Diagnóstico de funil, definição de Ideal Customer Profile, mapeamento Anti-ICP e plano de ação para elevar conversão e engajamento.",
+    meta_by: "Preparado por", meta_date: "Data", meta_base: "Base analisada",
+    meta_base_val: "26 alunos · 5 coortes", meta_priority: "Prioridade", meta_priority_val: "Alta",
+    toc_1:"Resumo", toc_2:"Base de Alunos", toc_3:"Comunicação", toc_4:"Concorrência",
+    toc_5:"Gargalos", toc_6:"ICP Ideal", toc_7:"Anti-ICP", toc_8:"Plano de Ação",
+    s1_eyebrow:"01 · Resumo Executivo",
+    s1_title:"O problema central: produto executivo sendo vendido como bootcamp",
+    s1_lead:"A análise identifica um desalinhamento sistêmico entre o produto real (MBA de upskilling executivo) e a comunicação praticada (transição de carreira, \"do zero ao profissional\"), gerando leads inadequados, baixa conversão e inatividade pós-matrícula.",
+    stat1:"dos alunos inativos ou em abandono (inativo 15d + silent + drop)",
+    stat2:"com ritmo de aprendizado <em>low</em> (risco elevado de churn)",
+    stat3:"de ativação em 7 dias — queda para 52% em 42 dias",
+    stat4:"investimento total vs. R$14k da XP Educação sem diferencial claro",
+    alert1_title:"🚨 Achado Crítico — Mensagem da Sales Presentation",
+    alert1_body:"A apresentação comercial usa o slogan <strong>\"Do Zero ao Profissional em TI em menos de 1 ano\"</strong> — linguagem de bootcamp de transição de carreira. Isso é incompatível com um MBA executivo de R$34.340, e atrai ativamente o perfil errado de lead para a equipe de closers.",
+    alert2_title:"⚠️ Achado Importante — Duplo Público na Landing Page",
+    alert2_body:"A landing page tenta comunicar simultaneamente com dois perfis opostos: profissionais em transição de carreira (\"faça o teste vocacional\") e executivos buscando upskilling (\"Torne-se quem decide\"). Essa ambiguidade dilui a proposta de valor e reduz a percepção de exclusividade do produto.",
+    s2_eyebrow:"02 · Análise da Base de Alunos",
+    s2_title:"Radiografia das 5 coortes ativas",
+    s2_lead:"Análise de 26 alunos matriculados extraída do sistema de gestão (Coortes 1–5), com foco em engajamento, ritmo e permanência.",
+    s2_h3a:"Status por coorte",
+    th_cohort:"Coorte", th_start:"Início", th_students:"Alunos",
+    th_studying:"Estudando", th_inactive:"Inativo 15d", th_silent:"Silent", th_drop:"Drop",
+    cohort1:"Coorte 1", cohort2:"Coorte 2", cohort3:"Coorte 3", cohort4:"Coorte 4", cohort5:"Coorte 5",
+    total_label:"Total",
+    s2_h3b:"Funil de Ativação Pós-Matrícula",
+    s2_funnel_lead:"Percentual de alunos que ativaram a plataforma em cada janela de tempo. A queda de 24 p.p. entre 7 e 42 dias aponta desengajamento crítico nas primeiras 6 semanas.",
+    f1_title:"Ativação em 7 dias (S1)", f1_body:"19 de 25 alunos fizeram primeiro acesso significativo na primeira semana",
+    f2_title:"Ativação em 21 dias (S2)", f2_body:"16 de 25 mantiveram engajamento até a terceira semana — perda de 12 p.p.",
+    f3_title:"Ativação em 42 dias (S3)", f3_body:"13 de 25 continuaram ativos até 6 semanas — perda acumulada de 24 p.p.",
+    s2_h3c:"Ritmo de Aprendizado",
+    pace_low:"Low (baixo)", pace_high:"High (alto)", pace_error:"Sem dado / Error",
+    alert3_title:"⚠️ Hipótese: Desalinhamento de Expectativa de Carga",
+    alert3_body:"O MBA exige 15–20h/semana (680h em 9 meses). Alunos com ritmo <em>low</em> provavelmente chegaram ao programa sem entender o compromisso real de tempo — consequência direta de uma comunicação que enfatiza flexibilidade sem evidenciar o nível de dedicação exigido de um MBA executivo.",
+    s2_h3d:"Perfis com Maior Sucesso (padrão emergente)",
+    th_name:"Aluno", th_cohort2:"Coorte", th_sprint:"Sprint Atual", th_progress:"Progresso", th_pace:"Ritmo", th_status:"Status",
+    sprint_py:"7 – Python", sprint_py2:"7 – Python", sprint_qual:"3 – Qualidade", sprint_ins:"4 – Insights", sprint_ins2:"4 – Insights",
+    studying:"studying", studying2:"studying", studying3:"studying", studying4:"studying", inactive:"inativo 15d",
+    s3_eyebrow:"03 · Auditoria de Comunicação Digital",
+    s3_title:"O produto certo com a mensagem errada",
+    s3_lead:"Análise da landing page, Sales Presentation e presença digital revela inconsistências estruturais no posicionamento que geram confusão no topo e no meio do funil.",
+    s3_h3a:"Landing Page — Diagnóstico por Elemento",
+    th_elem:"Elemento", th_msg:"O que comunica hoje", th_impact:"Impacto", th_align:"Alinhamento",
+    elem1:"<strong>Headline principal</strong>", elem1_msg:"\"Torne-se quem decide\" — linguagem executiva", elem1_imp:"Positivo para ICP correto",
+    elem2:"<strong>CTA \"Faça o teste vocacional\"</strong>", elem2_msg:"Convida quem não sabe a carreira que quer — perfil de entrada, não MBA", elem2_imp:"Atrai Anti-ICP diretamente",
+    elem3:"<strong>Público declarado</strong>", elem3_msg:"Lista 4 perfis simultâneos: transição, gestores, 40+, corporativo", elem3_imp:"Dilui proposta; sem prioridade clara",
+    elem4:"<strong>Promessa salarial</strong>", elem4_msg:"\"R$19.600 expectativa salarial com Python, SQL, BI\"", elem4_imp:"Linguagem de primeiro emprego em TI — bootcamp",
+    elem5:"<strong>Pré-requisitos</strong>", elem5_msg:"Ausentes — \"gestores não precisam virar devs\"", elem5_imp:"Não filtra entrada; gera expectativas irreais",
+    elem6:"<strong>Certificações</strong>", elem6_msg:"AWS Academy + Arizona State University + MEC 5", elem6_imp:"Forte diferencial — bem posicionado",
+    elem7:"<strong>Preço visível</strong>", elem7_msg:"R$3.570/mês — antes de qualificação", elem7_imp:"Pode desqualificar sem contexto de valor",
+    problem:"✗ Problema", review:"⚠ Revisar", problem2:"✗ Problema", review2:"⚠ Revisar", review3:"⚠ Revisar",
+    alert4_title:"🚨 Maior Gap: Sales Presentation usa posicionamento de Bootcamp",
+    alert4_body:"O material entregue pelo Closer contém a frase <strong>\"Do Zero ao Profissional em TI em menos de 1 ano\"</strong> — mensagem central dos bootcamps de transição. Um executivo com 10+ anos de experiência não se identifica com o produto. Isso explica objeções de \"não é para mim\" e conversões perdidas no fechamento.",
+    alert5_title:"⚠️ Redes Sociais — Ausência de Prova Social Executiva",
+    alert5_body:"O Instagram e LinkedIn da TripleTen carecem de depoimentos de profissionais em gestão usando o MBA como alavanca de crescimento. O conteúdo atual projeta imagem de escola de TI para iniciantes, não de formação executiva.",
+    s4_eyebrow:"04 · Análise de Mercado e Concorrência",
+    s4_title:"Onde a TripleTen está parada no mapa competitivo",
+    s4_lead:"O mercado de MBAs em Data/IA no Brasil tem dois clusters: programas premium de marca forte (FIA, FIAP) e programas acessíveis voltados ao executivo não-técnico (XP Educação). A TripleTen não ocupa com clareza nenhum dos dois.",
+    th_inst:"Instituição", th_prod:"Produto", th_price:"Preço Total", th_dur:"Duração", th_target:"Público-Alvo", th_diff:"Diferencial",
+    tt_prod:"MBA DA & AI", tt_dur:"9 meses · 680h", tt_target:"Duplo (conflitante)", tt_diff:"18 projetos, AWS, ASU, MEC 5",
+    fia_prod:"Advanced MBA Analytics & IA", fia_dur:"552h · 2×/semana", fia_target:"Executivos e gestores", fia_diff:"AMBA/EFMD/AACSB, mentoria C-level, FEA-USP",
+    fiap_prod:"MBA Data Science & AI", fiap_dur:"8–12 meses", fiap_target:"TI e negócios", fiap_diff:"Marca forte em SP, presencial + online, IBM",
+    xp_prod:"MBA IA para Negócios", xp_dur:"6 meses · flexível", xp_target:"Executivos sem base técnica", xp_diff:"Preço, marca XP, foco estratégico",
+    ins_prod:"IA Aplicada aos Negócios", ins_dur:"32h intensivo", ins_target:"Executivos 2+ anos exp.", ins_diff:"Marca premium, processo seletivo, presencial",
+    alert6_title:"⚠️ Diagnóstico de Posicionamento Competitivo",
+    alert6_body:"A TripleTen cobra 2,4× mais do que a XP Educação (que comunica melhor para executivos não-técnicos) e custa praticamente o mesmo que a FIA (que tem credenciais acadêmicas globais). Sem posicionamento diferenciado claro, o produto fica no \"meio do caminho\" e perde para ambos os extremos.",
+    s4_opp_title:"Oportunidade não explorada",
+    s4_opp_body:"Nenhum concorrente combina <strong>18 projetos práticos reais</strong> + <strong>certificação AWS Academy e Arizona State University</strong> + <strong>formato 100% assíncrono compatível com agenda executiva</strong>. Esse triângulo é o diferencial genuíno da TripleTen e deve ser o centro da comunicação.",
+    s5_eyebrow:"05 · Mapeamento de Gargalos do Funil",
+    s5_title:"Onde o funil vaza — etapa por etapa",
+    s5_lead:"Cada etapa do funil carrega um problema específico de posicionamento ou qualificação que reduz a chegada de leads com perfil executivo real.",
+    g1_area:"ATRAÇÃO · Instagram / LinkedIn / Google", g1_title:"Anúncios e conteúdo não filtram decisores de curiosos",
+    g1_body:"O criativo atual não exige nível de experiência mínimo e usa linguagem (\"do zero\", \"novo emprego\") que ressoa com transição de carreira, não com upskilling executivo. Resultado: volume alto de leads fora do perfil chegando ao SDR.",
+    g2_area:"NUTRIÇÃO · Landing Page + Formulário", g2_title:"Ausência de filtro qualificador antes do agendamento",
+    g2_body:"O formulário não pergunta cargo atual, tempo de experiência ou objetivo com o MBA. CTA \"Faça o teste vocacional\" posiciona o produto como escolha exploratória, não decisão executiva.",
+    g3_area:"QUALIFICAÇÃO · SDR", g3_title:"Roteiro não segmenta por nível de experiência gerencial",
+    g3_body:"O script do SDR precisa incluir perguntas sobre cargo, anos de experiência e motivação. Sem esse filtro, leads inadequados chegam ao Closer e consomem capacidade sem possibilidade de conversão.",
+    g4_area:"FECHAMENTO · Closer", g4_title:"Sales Presentation desalinhada com perfil executivo",
+    g4_body:"A apresentação usa posicionamento de bootcamp. Para um lead executivo, essa narrativa cria dissonância. O Closer perde tempo re-explicando o produto em vez de construir sobre a dor estratégica do lead.",
+    g5_area:"PÓS-MATRÍCULA · Onboarding", g5_title:"Expectativa de carga horária não comunicada antes da matrícula",
+    g5_body:"42% dos alunos tornam-se inativos após a matrícula. O engajamento cai de 76% para 52% nas primeiras 6 semanas. Falha de gestão de expectativa na etapa de venda.",
+    s6_eyebrow:"06 · Perfil de Cliente Ideal (ICP)",
+    s6_title:"Quem é o aluno que tem mais sucesso e fecha com maior probabilidade",
+    s6_lead:"O ICP do MBA DA&amp;AI da TripleTen é o profissional sênior que já tem base profissional consolidada e busca decisivamente ascender para posições estratégicas usando dados e IA como alavanca.",
+    icp1_badge:"ICP Principal", icp1_name:"O Gestor em Ascensão",
+    tr_age:"Faixa etária", tr_age_v:"28–45 anos",
+    tr_role:"Cargo atual", tr_role_v:"Analista Sênior, Coordenador, Gerente, Líder de Equipe",
+    tr_exp:"Experiência profissional", tr_exp_v:"5–15 anos na mesma área ou setor",
+    tr_area:"Área de atuação", tr_area_v:"Financeiro, Operações, Marketing, RH, Comercial, Negócios",
+    tr_goal:"Objetivo com o MBA", tr_goal_v:"Galgar para posição de liderança / entrar em área de dados como gestor",
+    tr_income:"Renda mensal atual", tr_income_v:"R$8.000–25.000 (capacidade de R$3.570/mês)",
+    tr_time:"Disponibilidade real", tr_time_v:"15–20h/semana — empregado, comprometido, disciplinado",
+    tr_tech:"Base técnica mínima", tr_tech_v:"Excel avançado ou algum contato com dados na função atual",
+    tr_pain:"Motivação principal (dores)", tr_pain_v:"Sente que dados são essenciais mas não domina; medo de ser ultrapassado pela IA; quer tomar decisões mais embasadas como líder",
+    tr_signals:"Sinais de qualificação", tr_signals_v:"LinkedIn ativo, empresa com 50+ funcionários, já gerencia projetos ou pessoas, mencionou stagnação ou promoção recusada",
+    icp2_badge:"ICP Secundário", icp2_name:"O Executivo Corporativo",
+    tr2_role:"Cargo atual", tr2_role_v:"Diretor, VP, Gerente Sênior, Head of",
+    tr2_ctx:"Contexto", tr2_ctx_v:"Empresa com cultura de dados emergente; precisa liderar times de analytics sem background técnico",
+    tr2_goal:"Objetivo", tr2_goal_v:"Credencial para legitimar decisões data-driven; entender o que sua equipe de dados faz",
+    tr2_price:"Sensibilidade a preço", tr2_price_v:"Baixa — prioriza ROI de carreira e reconhecimento da certificação",
+    tr2_channel:"Canal de entrada", tr2_channel_v:"LinkedIn (conteúdo técnico-executivo), indicação, eventos corporativos",
+    s6_q_title:"Perguntas de Qualificação para SDR / Closer",
+    q_question:"Pergunta", q_yes:"Resposta que qualifica (ICP)", q_no:"Resposta que desqualifica",
+    q1:"\"Qual é seu cargo e há quantos anos está nessa área?\"", q1_yes:"Analista sênior+, gestor, 5+ anos", q1_no:"Recém-formado, estágio, \"ainda não trabalho com isso\"",
+    q2:"\"O que te trouxe a buscar um MBA agora?\"", q2_yes:"Crescer para liderança, usar dados estrategicamente", q2_no:"\"Quero mudar de área\", \"não gosto do meu trabalho atual\"",
+    q3:"\"Você tem 15–20h por semana para dedicar ao MBA?\"", q3_yes:"Sim, já organizo meu tempo assim", q3_no:"Hesitação, \"depende do mês\", \"às vezes\"",
+    q4:"\"Você já trabalha com dados ou análise na sua função?\"", q4_yes:"Excel, relatórios, KPIs, BI básico", q4_no:"\"Nunca\", \"quero começar do zero\"",
+    q5:"\"Como você avalia a parcela de R$3.570?\"", q5_yes:"\"Está dentro do esperado\" / \"consigo viabilizar\"", q5_no:"\"É muito alto\", \"preciso de parcelamento maior\"",
+    s7_eyebrow:"07 · Matriz Anti-ICP",
+    s7_title:"Quem desqualificar no início do funil — e por quê",
+    s7_lead:"Desqualificar cedo economiza tempo do SDR e do Closer, reduz churn pós-matrícula e protege a reputação do produto. Esses perfis não são \"alunos ruins\" — são alunos para outro produto (bootcamp).",
+    anti1_badge:"Anti-ICP #1", anti1_name:"O Transicionador Sem Base",
+    a1_profile:"Perfil", a1_profile_v:"Recém-formado ou profissional sem nenhuma exposição a dados",
+    a1_signal:"Sinal de identificação", a1_signal_v:"\"Quero mudar de carreira para dados/TI\", \"nunca trabalhei com Excel ou BI\"",
+    a1_why:"Por que desqualificar", a1_why_v:"Produto não foi desenhado para iniciantes absolutos — vai abandonar ou pedir reembolso",
+    a1_redirect:"Redirecionamento", a1_redirect_v:"Bootcamp de Data Analytics como pré-requisito",
+    anti2_badge:"Anti-ICP #2", anti2_name:"O Caçador de Emprego Imediato",
+    a2_profile:"Perfil", a2_profile_v:"Desempregado buscando recolocação rápida com a menor despesa possível",
+    a2_signal:"Sinal de identificação", a2_signal_v:"\"Preciso de emprego em 3 meses\", foco em velocidade e custo",
+    a2_why:"Por que desqualificar", a2_why_v:"MBA de 9 meses não é solução de recolocação imediata; expectativa desalinhada = churn certo",
+    a2_redirect:"Redirecionamento", a2_redirect_v:"Bootcamp com career services incluído",
+    anti3_badge:"Anti-ICP #3", anti3_name:"O Sensível ao Preço",
+    a3_profile:"Perfil", a3_profile_v:"Interessado mas com renda que não suporta R$3.570/mês confortavelmente",
+    a3_signal:"Sinal de identificação", a3_signal_v:"Pergunta insistente sobre desconto, compara com XP (R$390/mês), pede parcelamento adicional",
+    a3_why:"Por que desqualificar", a3_why_v:"Inadimplência e abandono por pressão financeira; não percebe valor suficiente para o preço",
+    a3_redirect:"Redirecionamento", a3_redirect_v:"XP Educação ou programas com financiamento estudantil",
+    anti4_badge:"Anti-ICP #4", anti4_name:"O Sem Tempo Real",
+    a4_profile:"Perfil", a4_profile_v:"Executivo com agenda lotada que superestima capacidade de dedicação",
+    a4_signal:"Sinal de identificação", a4_signal_v:"Hesita na pergunta de carga horária, viagens frequentes, filhos pequenos + trabalho intenso",
+    a4_why:"Por que desqualificar", a4_why_v:"680h em 9 meses = ~17h/semana. Sem comprometimento real, vira estatística de inatividade",
+    a4_redirect:"Redirecionamento", a4_redirect_v:"Insper (32h intensivo) ou programas de extensão de menor carga",
+    s8_eyebrow:"08 · Plano de Ação",
+    s8_title:"Correções práticas por etapa do funil",
+    s8_lead:"Recomendações acionáveis organizadas por prioridade, cobrindo landing page, comunicação digital, roteiro comercial e onboarding.",
+    p_urgent:"🔴 Urgente — Impacto imediato na conversão",
+    a1_area:"Sales Presentation", a1_h4:"Substituir posicionamento \"do zero\" por narrativa executiva",
+    a1_p:"Remover toda referência a \"do zero ao profissional em TI\". Substituir pelo eixo: <em>\"Para quem já tem uma carreira e quer elevar sua capacidade de liderança com dados e IA.\"</em> O material deve abrir com a dor do executivo sênior, não com a do iniciante.",
+    a2_area:"Script SDR", a2_h4:"Incluir 3 perguntas de qualificação mínima obrigatórias no agendamento",
+    a2_p:"Cargo atual + anos de experiência + motivação de carreira. Lead que declare \"quero mudar de área completamente\" deve ser redirecionado para o bootcamp antes do agendamento com o Closer.",
+    a3_area:"Landing Page — CTA", a3_h4:"Remover \"Faça o teste vocacional\" — substituir por CTA executivo",
+    a3_p:"Substituir por: <em>\"Veja se o programa é para você\"</em> com 3 critérios declarados (experiência mínima, carga horária, objetivos). Isso auto-filtra antes do agendamento.",
+    p_short:"🟡 Curto Prazo — Qualidade do funil e prova social",
+    a4_area:"Landing Page — Público", a4_h4:"Unificar comunicação em torno do perfil executivo/gestor como protagonista",
+    a4_p:"Criar seção \"Este MBA é para você se...\" com critérios: 5+ anos de experiência, cargo de liderança ou interesse em assumir um, e contato com dados na função atual.",
+    a5_area:"Redes Sociais", a5_h4:"Criar série de conteúdo de prova social executiva no LinkedIn e Instagram",
+    a5_p:"Depoimentos em vídeo de alunos com perfil gestor falando sobre impacto na carreira (promoção, novo cargo, projeto de dados aprovado).",
+    a6_area:"Formulário de Captura", a6_h4:"Adicionar campos de qualificação no formulário de agendamento",
+    a6_p:"Cargo atual, anos de experiência (faixa: 0–2, 3–5, 5–10, 10+) e objetivo principal. Leads abaixo do threshold vão para fluxo de nutrição do bootcamp.",
+    p_medium:"🟢 Médio Prazo — Retenção e NPS",
+    a7_area:"Onboarding Pós-Matrícula", a7_h4:"Criar sessão de alinhamento de expectativas obrigatória na semana 0",
+    a7_p:"Sessão ao vivo ou vídeo + formulário de compromisso detalhando: 680h totais, ritmo esperado por sprint, o que acontece se o aluno ficar inativo.",
+    a8_area:"Discurso do Closer", a8_h4:"Reformular a reunião de consultoria em torno da dor estratégica do executivo",
+    a8_p:"Abrir com: \"Qual é a maior frustração na sua posição atual em relação a dados?\" — só então apresentar o MBA como solução para essa dor específica.",
+    a9_area:"Posicionamento Competitivo", a9_h4:"Articular os três diferenciais únicos acima da dobra na landing page",
+    a9_p:"<strong>18 projetos práticos reais</strong> + <strong>certificação AWS Academy e Arizona State University</strong> + <strong>formato 100% assíncrono compatível com agenda executiva</strong>. Esses três pontos juntos e em destaque visual — não dispersos ao longo do conteúdo.",
+    footer1:"<strong>TripleTen Brasil — Análise Confidencial de Uso Interno</strong> · Setembro 2026",
+    footer2:"Fontes: base de 26 alunos (CSV do sistema de gestão), auditoria de landing page e Sales Presentation, pesquisa de mercado em FIA, XP Educação, FIAP e Insper."
+  },
+  en: {
+    header_eyebrow: "TripleTen Brasil · Commercial Intelligence",
+    header_title: "ICP Analysis &amp; Positioning Strategy<br><em>MBA in Data Analytics &amp; AI</em>",
+    header_subtitle: "Funnel diagnosis, Ideal Customer Profile definition, Anti-ICP mapping, and action plan to improve conversion and engagement.",
+    meta_by:"Prepared by", meta_date:"Date", meta_base:"Data analyzed",
+    meta_base_val:"26 students · 5 cohorts", meta_priority:"Priority", meta_priority_val:"High",
+    toc_1:"Summary", toc_2:"Student Base", toc_3:"Communication", toc_4:"Competition",
+    toc_5:"Bottlenecks", toc_6:"Ideal ICP", toc_7:"Anti-ICP", toc_8:"Action Plan",
+    s1_eyebrow:"01 · Executive Summary",
+    s1_title:"The core problem: an executive product being sold as a bootcamp",
+    s1_lead:"The analysis identifies a systemic misalignment between the actual product (executive upskilling MBA) and the messaging used (career transition, \"from zero to professional\"), generating unqualified leads, low conversion, and post-enrollment inactivity.",
+    stat1:"of students inactive or churned (inactive 15d + silent + drop)",
+    stat2:"with <em>low</em> learning pace (high churn risk)",
+    stat3:"7-day activation rate — dropping to 52% by day 42",
+    stat4:"total investment vs. R$14k from XP Educação with no clear differentiator",
+    alert1_title:"🚨 Critical Finding — Sales Presentation Messaging",
+    alert1_body:"The sales deck uses the tagline <strong>\"From Zero to IT Professional in under 1 year\"</strong> — career-transition bootcamp language. This is incompatible with a R$34,340 executive MBA and actively attracts the wrong lead profile to the closer team.",
+    alert2_title:"⚠️ Important Finding — Dual Audience on the Landing Page",
+    alert2_body:"The landing page tries to speak simultaneously to two opposite profiles: career changers (\"take the vocational test\") and executives seeking upskilling (\"Become the one who decides\"). This ambiguity dilutes the value proposition and undermines the product's perceived exclusivity.",
+    s2_eyebrow:"02 · Student Base Analysis",
+    s2_title:"Breakdown of the 5 active cohorts",
+    s2_lead:"Analysis of 26 enrolled students from the management system (Cohorts 1–5), focusing on engagement, pace, and retention.",
+    s2_h3a:"Status by cohort",
+    th_cohort:"Cohort", th_start:"Start", th_students:"Students",
+    th_studying:"Active", th_inactive:"Inactive 15d", th_silent:"Silent", th_drop:"Drop",
+    cohort1:"Cohort 1", cohort2:"Cohort 2", cohort3:"Cohort 3", cohort4:"Cohort 4", cohort5:"Cohort 5",
+    total_label:"Total",
+    s2_h3b:"Post-Enrollment Activation Funnel",
+    s2_funnel_lead:"Percentage of students who activated the platform within each time window. The 24 p.p. drop between day 7 and day 42 signals critical disengagement in the first 6 weeks.",
+    f1_title:"7-day activation (S1)", f1_body:"19 of 25 students made a meaningful first access in week 1",
+    f2_title:"21-day activation (S2)", f2_body:"16 of 25 remained engaged by week 3 — a loss of 12 p.p.",
+    f3_title:"42-day activation (S3)", f3_body:"13 of 25 remained active at 6 weeks — cumulative loss of 24 p.p.",
+    s2_h3c:"Learning Pace",
+    pace_low:"Low", pace_high:"High", pace_error:"No data / Error",
+    alert3_title:"⚠️ Hypothesis: Workload Expectation Misalignment",
+    alert3_body:"The MBA requires 15–20h/week (680h over 9 months). Students with a <em>low</em> pace likely enrolled without fully understanding the time commitment — a direct consequence of messaging that emphasizes flexibility without conveying the rigor expected in an executive MBA.",
+    s2_h3d:"Highest-Performing Student Profiles (emerging pattern)",
+    th_name:"Student", th_cohort2:"Cohort", th_sprint:"Current Sprint", th_progress:"Progress", th_pace:"Pace", th_status:"Status",
+    sprint_py:"7 – Python", sprint_py2:"7 – Python", sprint_qual:"3 – Data Quality", sprint_ins:"4 – Insights", sprint_ins2:"4 – Insights",
+    studying:"studying", studying2:"studying", studying3:"studying", studying4:"studying", inactive:"inactive 15d",
+    s3_eyebrow:"03 · Digital Communication Audit",
+    s3_title:"The right product with the wrong message",
+    s3_lead:"Analysis of the landing page, Sales Presentation, and digital presence reveals structural inconsistencies in positioning that create confusion at the top and middle of the funnel.",
+    s3_h3a:"Landing Page — Element-by-Element Diagnosis",
+    th_elem:"Element", th_msg:"Current message", th_impact:"Impact", th_align:"Alignment",
+    elem1:"<strong>Main headline</strong>", elem1_msg:"\"Become the one who decides\" — executive language", elem1_imp:"Positive for the right ICP",
+    elem2:"<strong>CTA \"Take the vocational test\"</strong>", elem2_msg:"Appeals to people unsure of their career path — entry-level, not MBA", elem2_imp:"Directly attracts Anti-ICP",
+    elem3:"<strong>Declared audience</strong>", elem3_msg:"Lists 4 simultaneous profiles: career changers, managers, 40+, corporate", elem3_imp:"Dilutes proposition; no clear priority",
+    elem4:"<strong>Salary promise</strong>", elem4_msg:"\"R$19,600 expected salary with Python, SQL, BI\"", elem4_imp:"First-job-in-tech language — bootcamp framing",
+    elem5:"<strong>Prerequisites</strong>", elem5_msg:"Absent — \"managers don't need to become developers\"", elem5_imp:"No entry filter; creates unrealistic expectations",
+    elem6:"<strong>Certifications</strong>", elem6_msg:"AWS Academy + Arizona State University + MEC 5", elem6_imp:"Strong differentiator — well positioned",
+    elem7:"<strong>Visible price</strong>", elem7_msg:"R$3,570/month — before qualification", elem7_imp:"May disqualify without value context",
+    problem:"✗ Issue", review:"⚠ Review", problem2:"✗ Issue", review2:"⚠ Review", review3:"⚠ Review",
+    alert4_title:"🚨 Biggest Gap: Sales Presentation uses Bootcamp Positioning",
+    alert4_body:"The material delivered by Closers contains the phrase <strong>\"From Zero to IT Professional in under 1 year\"</strong> — the core message of career-transition bootcamps. An executive with 10+ years of experience who receives this deck will not identify with the product, explaining \"it's not for me\" objections and lost closes.",
+    alert5_title:"⚠️ Social Media — Lack of Executive Social Proof",
+    alert5_body:"TripleTen's Instagram and LinkedIn lack testimonials from management-level professionals using the MBA as a career lever. Current content projects the image of a tech school for beginners, not an executive education program.",
+    s4_eyebrow:"04 · Market & Competitive Analysis",
+    s4_title:"Where TripleTen sits on the competitive map",
+    s4_lead:"The Brazilian Data/AI MBA market has two clusters: premium brand programs (FIA, FIAP) and accessible programs for non-technical executives (XP Educação). TripleTen does not clearly occupy either.",
+    th_inst:"Institution", th_prod:"Product", th_price:"Total Price", th_dur:"Duration", th_target:"Target Audience", th_diff:"Differentiator",
+    tt_prod:"MBA DA & AI", tt_dur:"9 months · 680h", tt_target:"Dual (conflicting)", tt_diff:"18 projects, AWS, ASU, MEC 5",
+    fia_prod:"Advanced MBA Analytics & AI", fia_dur:"552h · 2×/week", fia_target:"Executives and managers", fia_diff:"AMBA/EFMD/AACSB, C-level mentoring, FEA-USP",
+    fiap_prod:"MBA Data Science & AI", fiap_dur:"8–12 months", fiap_target:"Tech and business pros", fiap_diff:"Strong SP brand, in-person + online, IBM",
+    xp_prod:"MBA AI for Business", xp_dur:"6 months · flexible", xp_target:"Non-technical executives", xp_diff:"Price, XP brand, strategic focus",
+    ins_prod:"AI Applied to Business", ins_dur:"32h intensive", ins_target:"Executives 2+ yrs exp.", ins_diff:"Premium brand, selective process, in-person",
+    alert6_title:"⚠️ Competitive Positioning Diagnosis",
+    alert6_body:"TripleTen charges 2.4× more than XP Educação (which communicates better to non-technical executives) and costs nearly the same as FIA (which holds global academic credentials). Without clear differentiation, the product is stuck in the middle and loses to both extremes on perceived value.",
+    s4_opp_title:"Unexplored opportunity",
+    s4_opp_body:"No competitor combines <strong>18 real-world practical projects</strong> + <strong>AWS Academy and Arizona State University certification</strong> + <strong>100% asynchronous format compatible with an executive schedule</strong>. This triangle is TripleTen's genuine differentiator and should be the center of all communications.",
+    s5_eyebrow:"05 · Funnel Bottleneck Mapping",
+    s5_title:"Where the funnel leaks — stage by stage",
+    s5_lead:"Each funnel stage carries a specific positioning or qualification problem that reduces the flow of genuine executive-profile leads.",
+    g1_area:"ATTRACTION · Instagram / LinkedIn / Google", g1_title:"Ads and content don't filter decision-makers from browsers",
+    g1_body:"Current creative sets no minimum experience requirement and uses language (\"from zero\", \"new IT job\") that resonates with career changers, not executive upskilling. Result: high volume of off-profile leads reaching the SDR.",
+    g2_area:"NURTURE · Landing Page + Form", g2_title:"No qualifying filter before scheduling",
+    g2_body:"The capture form doesn't ask for current role, years of experience, or MBA objective. The CTA \"Take the vocational test\" positions the product as exploratory, not an executive decision.",
+    g3_area:"QUALIFICATION · SDR", g3_title:"Script doesn't segment by managerial experience level",
+    g3_body:"The SDR script needs questions about current role, years of experience, and motivation (upskilling vs. transition). Without this filter, unqualified leads reach Closers and consume capacity with no conversion potential.",
+    g4_area:"CLOSING · Closer", g4_title:"Sales Presentation misaligned with executive profile",
+    g4_body:"The deck uses bootcamp positioning. For an executive lead, this narrative creates dissonance and reduces perceived value. The Closer wastes time re-explaining the product instead of building on the lead's strategic pain.",
+    g5_area:"POST-ENROLLMENT · Onboarding", g5_title:"Workload expectation not communicated before enrollment",
+    g5_body:"42% of students become inactive after enrollment. Engagement drops from 76% to 52% in the first 6 weeks. A failure of expectation management in the sales stage.",
+    s6_eyebrow:"06 · Ideal Customer Profile (ICP)",
+    s6_title:"Who is the student most likely to succeed and convert",
+    s6_lead:"TripleTen's MBA DA&amp;AI ICP is the senior professional who already has a solid career foundation and is decisively seeking to advance to strategic positions using data and AI as a lever.",
+    icp1_badge:"Primary ICP", icp1_name:"The Rising Manager",
+    tr_age:"Age range", tr_age_v:"28–45 years old",
+    tr_role:"Current role", tr_role_v:"Senior Analyst, Coordinator, Manager, Team Lead",
+    tr_exp:"Professional experience", tr_exp_v:"5–15 years in the same field or industry",
+    tr_area:"Industry", tr_area_v:"Finance, Operations, Marketing, HR, Sales, Business",
+    tr_goal:"MBA objective", tr_goal_v:"Move into a leadership role / enter the data space as a manager",
+    tr_income:"Current monthly income", tr_income_v:"R$8,000–25,000 (able to afford R$3,570/month)",
+    tr_time:"Real availability", tr_time_v:"15–20h/week — employed, committed, disciplined",
+    tr_tech:"Minimum technical base", tr_tech_v:"Advanced Excel or some data exposure in current role",
+    tr_pain:"Main motivation (pain points)", tr_pain_v:"Feels data is essential but lacks mastery; fears being surpassed by AI; wants to make better data-driven decisions as a leader",
+    tr_signals:"Qualification signals", tr_signals_v:"Active LinkedIn, company with 50+ employees, already manages projects or people, mentioned career stagnation or a denied promotion",
+    icp2_badge:"Secondary ICP", icp2_name:"The Corporate Executive",
+    tr2_role:"Current role", tr2_role_v:"Director, VP, Senior Manager, Head of",
+    tr2_ctx:"Context", tr2_ctx_v:"Company with an emerging data culture; needs to lead analytics teams without a technical background",
+    tr2_goal:"Objective", tr2_goal_v:"Credential to legitimize data-driven decisions; understand what their data team does",
+    tr2_price:"Price sensitivity", tr2_price_v:"Low — prioritizes career ROI and certification brand recognition",
+    tr2_channel:"Entry channel", tr2_channel_v:"LinkedIn (executive-technical content), referrals, corporate events",
+    s6_q_title:"Qualification Questions for SDR / Closer",
+    q_question:"Question", q_yes:"Qualifying answer (ICP)", q_no:"Disqualifying answer",
+    q1:"\"What is your current role and how many years have you been in this field?\"", q1_yes:"Senior analyst+, manager, 5+ years", q1_no:"Recent graduate, intern, \"I don't work with this yet\"",
+    q2:"\"What brought you to look for an MBA now?\"", q2_yes:"Move into leadership, use data strategically", q2_no:"\"I want to change careers\", \"I don't enjoy my current job\"",
+    q3:"\"Do you have 15–20 hours per week to dedicate to the MBA?\"", q3_yes:"Yes, I already manage my time this way", q3_no:"Hesitation, \"it depends on the month\", \"sometimes\"",
+    q4:"\"Do you already work with data or analysis in your current role?\"", q4_yes:"Excel, reports, KPIs, basic BI", q4_no:"\"Never\", \"I want to start from scratch\"",
+    q5:"\"How do you feel about the R$3,570 monthly installment?\"", q5_yes:"\"It's within what I expected\" / \"I can make it work\"", q5_no:"\"It's too high\", \"I need more installments\"",
+    s7_eyebrow:"07 · Anti-ICP Matrix",
+    s7_title:"Who to disqualify early in the funnel — and why",
+    s7_lead:"Early disqualification saves SDR and Closer time, reduces post-enrollment churn, and protects the product's reputation. These aren't \"bad students\" — they're students for a different product (bootcamp).",
+    anti1_badge:"Anti-ICP #1", anti1_name:"The Zero-Experience Career Changer",
+    a1_profile:"Profile", a1_profile_v:"Recent graduate or professional with no data exposure whatsoever",
+    a1_signal:"Identification signal", a1_signal_v:"\"I want to switch careers into data/tech\", \"I've never worked with Excel or BI\"",
+    a1_why:"Why disqualify", a1_why_v:"Product was not designed for absolute beginners — will drop out or request a refund",
+    a1_redirect:"Redirect to", a1_redirect_v:"Data Analytics bootcamp as a prerequisite",
+    anti2_badge:"Anti-ICP #2", anti2_name:"The Immediate Job Hunter",
+    a2_profile:"Profile", a2_profile_v:"Unemployed, seeking fast re-entry into the job market at the lowest possible cost",
+    a2_signal:"Identification signal", a2_signal_v:"\"I need a job in 3 months\", \"is there a job guarantee?\", focus on speed and cost",
+    a2_why:"Why disqualify", a2_why_v:"A 9-month MBA is not an immediate re-placement solution; misaligned expectation = guaranteed churn",
+    a2_redirect:"Redirect to", a2_redirect_v:"Bootcamp with career services included",
+    anti3_badge:"Anti-ICP #3", anti3_name:"The Price-Sensitive Prospect",
+    a3_profile:"Profile", a3_profile_v:"Interested but income doesn't comfortably support R$3,570/month",
+    a3_signal:"Identification signal", a3_signal_v:"Persistently asks for discount, directly compares to XP (R$390/month), requests more installments",
+    a3_why:"Why disqualify", a3_why_v:"Default risk and dropout due to financial pressure; doesn't perceive enough value for the price",
+    a3_redirect:"Redirect to", a3_redirect_v:"XP Educação or programs with student financing",
+    anti4_badge:"Anti-ICP #4", anti4_name:"The Overbooked Executive",
+    a4_profile:"Profile", a4_profile_v:"Executive with a packed schedule who overestimates their capacity to study",
+    a4_signal:"Identification signal", a4_signal_v:"Hesitates on the workload question, frequent travel, young children + intense job",
+    a4_why:"Why disqualify", a4_why_v:"680h over 9 months = ~17h/week. Without real commitment, they become an inactivity statistic",
+    a4_redirect:"Redirect to", a4_redirect_v:"Insper (32h intensive) or lower-load extension programs",
+    s8_eyebrow:"08 · Action Plan",
+    s8_title:"Practical fixes by funnel stage",
+    s8_lead:"Actionable recommendations organized by priority, covering landing page, digital communication, commercial script, and onboarding.",
+    p_urgent:"🔴 Urgent — Immediate impact on conversion",
+    a1_area:"Sales Presentation", a1_h4:"Replace the \"from zero\" positioning with an executive narrative",
+    a1_p:"Remove all references to \"from zero to IT professional\". Replace with the axis: <em>\"For those who already have a career and want to elevate their leadership capacity with data and AI.\"</em> The deck must open with the senior executive's pain, not the beginner's.",
+    a2_area:"SDR Script", a2_h4:"Add 3 mandatory minimum qualifying questions at scheduling",
+    a2_p:"Current role + years of experience + career motivation. Any lead who declares \"I want to completely change careers\" or \"I've never worked with data\" should be redirected to the bootcamp before the Closer meeting.",
+    a3_area:"Landing Page — CTA", a3_h4:"Remove \"Take the vocational test\" — replace with executive CTA",
+    a3_p:"Replace with: <em>\"See if this program is right for you\"</em> with 3 stated criteria (minimum experience, weekly hours, objectives). This self-filters before scheduling.",
+    p_short:"🟡 Short-term — Funnel quality and social proof",
+    a4_area:"Landing Page — Audience", a4_h4:"Unify communication around the executive/manager profile as the protagonist",
+    a4_p:"Create a \"This MBA is for you if...\" section with criteria: 5+ years of experience, a leadership role or aspiration, and data exposure in the current role. The transition profile should be explicitly redirected.",
+    a5_area:"Social Media", a5_h4:"Create an executive social proof content series on LinkedIn and Instagram",
+    a5_p:"Video testimonials from manager-profile students talking about career impact (promotion, new role, approved data project). Content that positions the MBA as a leadership tool, not a tech entry point.",
+    a6_area:"Capture Form", a6_h4:"Add qualifying fields to the scheduling form",
+    a6_p:"Current role, years of experience (range: 0–2, 3–5, 5–10, 10+), and primary objective. Leads below the threshold go to a bootcamp nurture flow, not the MBA SDR.",
+    p_medium:"🟢 Medium-term — Retention and NPS",
+    a7_area:"Post-Enrollment Onboarding", a7_h4:"Create a mandatory expectation-alignment session in week 0",
+    a7_p:"Live session or video + commitment form detailing: 680h total, expected pace per sprint, consequences of inactivity. Students sign a \"learning commitment\" — increases accountability and reduces silent dropout.",
+    a8_area:"Closer Conversation", a8_h4:"Restructure the consulting call around the executive's strategic pain",
+    a8_p:"Open with: \"What is your biggest frustration in your current role when it comes to data?\" — only then present the MBA as the solution to that specific pain.",
+    a9_area:"Competitive Positioning", a9_h4:"Articulate the three unique differentiators above the fold on the landing page",
+    a9_p:"<strong>18 real-world practical projects</strong> + <strong>AWS Academy and Arizona State University certification</strong> + <strong>100% asynchronous format compatible with executive schedules</strong>. These three points together and with visual prominence — not scattered throughout the content.",
+    footer1:"<strong>TripleTen Brasil — Confidential Internal Use</strong> · September 2026",
+    footer2:"Sources: 26-student base (CSV from management system), landing page and Sales Presentation audit, market research on FIA, XP Educação, FIAP, and Insper."
+  }
+};
+
+let currentLang = 'pt';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+  document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  const d = T[lang];
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.getAttribute('data-key');
+    if (d[k] !== undefined) el.innerHTML = d[k];
+  });
+}
+</script>
+</body>
+</html>
